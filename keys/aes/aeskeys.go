@@ -1,7 +1,6 @@
 package aes
 
 import (
-	"errors"
 	"crypto/rand"
 	"io"
 )
@@ -18,10 +17,6 @@ type Aes struct {
 
 func CreateAESKey (name string , size int) (*Aes , error) {
 
-	var message string
-
-
-
 	aes := new(Aes)
 
 	aes.RawBytes = make([]byte,size)
@@ -29,7 +24,7 @@ func CreateAESKey (name string , size int) (*Aes , error) {
 	_,err := io.ReadFull(rand.Reader,aes.RawBytes[:])
 
 	if err != nil {
-		return nil, errors.New(message)
+		return nil, err
 	}
 
 	aes.name = name
