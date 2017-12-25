@@ -1,6 +1,9 @@
 package model
 
-import "github.com/jinzhu/gorm"
+import (
+	"github.com/jinzhu/gorm"
+	"keymanager/configuration"
+)
 
 type OwnerDetails struct {
 	Name string
@@ -15,7 +18,15 @@ type OwnerModel struct {
 
 
 func (k *OwnerModel) Connect() (*gorm.DB, error) {
-	db, err := gorm.Open("mysql", "root:root@tcp(0.0.0.0:3456)/Keymanager?charset=utf8&parseTime=True&loc=Local")
+	dbusr := configuration.ConfMap["DBUSR"]
+	dbpassword := configuration.ConfMap["DBPASSWORD"]
+	host := configuration.ConfMap["DBHOST"]
+	port := configuration.ConfMap["DBPORT"]
+	database := configuration.ConfMap["DBNAME"]
+
+	connsting := dbusr + ":" + dbpassword +"@tcp("+host + ":" + port + ")/" + database + "?charset=utf8&parseTime=True&loc=Local"
+
+	db, err := gorm.Open("mysql", connsting)
 	if err != nil {
 		return nil, err
 	}

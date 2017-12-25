@@ -2,9 +2,20 @@ package model
 
 import (
 	"testing"
+	"os"
+	"keymanager/configuration"
 )
 
 func TestOwnerModel_Connect(t *testing.T) {
+
+	os.Setenv("DBNAME","Keymanager")
+	os.Setenv("DBUSR","root")
+	os.Setenv("DBPASSWORD","root")
+	os.Setenv("DBHOST","0.0.0.0")
+	os.Setenv("DBPORT","3456")
+
+
+	configuration.InitializeConfiguration()
 
 }
 

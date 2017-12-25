@@ -1,14 +1,17 @@
 package configuration
 
-
+import "os"
 
 var ConfMap map[string]string
 
 func InitializeConfiguration() {
-	ConfMap["keydatabase"] = "Keymanager"
-	ConfMap["user"] = "root"
-	ConfMap["password"] = "root"
-	ConfMap["host"] = "0.0.0.0"
-	ConfMap["port"] = "3456"
+
+	ConfMap = make(map[string]string)
+
+	ConfMap["DBNAME"] = os.Getenv("DBNAME")
+	ConfMap["DBUSR"] = os.Getenv("DBUSR")
+	ConfMap["DBPASSWORD"] = os.Getenv("DBPASSWORD")
+	ConfMap["DBHOST"] = os.Getenv("DBHOST")
+	ConfMap["DBPORT"] = os.Getenv("DBPORT")
 
 }

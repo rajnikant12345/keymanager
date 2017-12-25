@@ -3,15 +3,32 @@ package model
 import (
 	"testing"
 	"time"
+	"os"
+	"keymanager/configuration"
 )
 
+
+
+
 func TestKeyModel_Connect(t *testing.T) {
+
+	os.Setenv("DBNAME","Keymanager")
+	os.Setenv("DBUSR","root")
+	os.Setenv("DBPASSWORD","root")
+	os.Setenv("DBHOST","0.0.0.0")
+	os.Setenv("DBPORT","3456")
+
+
+	configuration.InitializeConfiguration()
+
+
 
 }
 
 
 
 func TestKeyModel_DropTable(t *testing.T) {
+
 	k := new(KeyModel)
 	k.DropTable()
 	if k.DB.Error != nil {
