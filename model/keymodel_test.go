@@ -69,7 +69,6 @@ func TestKeyModel_SelectAllKeys(t *testing.T) {
 		t.Log(u.KeyName)
 	}
 
-
 	if k.DB.Error != nil {
 		t.Log(k.DB.Error.Error())
 		t.Fail()
