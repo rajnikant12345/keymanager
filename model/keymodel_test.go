@@ -11,6 +11,15 @@ func TestKeyModel_Connect(t *testing.T) {
 
 
 
+func TestKeyModel_DropTable(t *testing.T) {
+	k := new(KeyModel)
+	k.DropTable()
+	if k.DB.Error != nil {
+		t.Log(t.Name(),k.DB.Error.Error())
+		t.Fail()
+	}
+}
+
 func TestKeyModel_CreateTable(t *testing.T) {
 
 	k := new(KeyModel)
@@ -18,21 +27,13 @@ func TestKeyModel_CreateTable(t *testing.T) {
 	k.CreateTable()
 
 	if k.DB.Error != nil {
-		t.Log(k.DB.Error.Error())
+		t.Log(t.Name(),k.DB.Error.Error())
 		t.Fail()
 	}
 
 }
 
 
-func TestKeyModel_DropTable(t *testing.T) {
-	k := new(KeyModel)
-	k.DropTable()
-	if k.DB.Error != nil {
-		t.Log(k.DB.Error.Error())
-		t.Fail()
-	}
-}
 
 func TestKeyModel_Insert(t *testing.T) {
 	k := new(KeyModel)
@@ -40,7 +41,7 @@ func TestKeyModel_Insert(t *testing.T) {
 	k1.Algorithm = "aes"
 	k1.Deletable = true
 	k1.Exportable = false
-	k1.KeyName = "rajni"+time.Now().String()
+	k1.KeyName = "rajni"
 	k1.KeyUniqueId = k.CreateAUUID(16)
 	k1.LifeCycle.Activationdate = time.Now()
 	k1.LifeCycle.CreationDate = time.Now()
@@ -54,23 +55,53 @@ func TestKeyModel_Insert(t *testing.T) {
 	k.Insert(&k1)
 
 	if k.DB.Error != nil {
-		t.Log(k.DB.Error.Error())
+		t.Log(t.Name(),k.DB.Error.Error())
 		t.Fail()
 	}
 
 }
 
-func TestKeyModel_SelectAllKeys(t *testing.T) {
+func TestKeyModel_SelectKeys(t *testing.T) {
 	k := new(KeyModel)
 
-	_, a := k.SelectAllKeys()
+	_, a := k.SelectAll()
 
 	for _,u := range a {
-		t.Log(u.KeyName)
+		t.Log(t.Name(),u.KeyName , u.Size , u.OwnerName, u.Algorithm)
 	}
 
 	if k.DB.Error != nil {
-		t.Log(k.DB.Error.Error())
+		t.Log(t.Name(),k.DB.Error.Error())
 		t.Fail()
 	}
+}
+
+func TestKeyModel_GetPublicBytes(t *testing.T) {
+	k := new(KeyModel)
+
+	_,a := k.GetPublicBytes("rajni","rajni")
+
+	if k.DB.Error != nil {
+		t.Log(t.Name(),k.DB.Error.Error())
+		t.Fail()
+	}
+
+	t.Log(t.Name(),string(a))
+
+
+}
+
+func TestKeyModel_GetPrivateBytes(t *testing.T) {
+	k := new(KeyModel)
+
+	_,a := k.GetPrivateBytes("rajni","rajni")
+
+	if k.DB.Error != nil {
+		t.Log(t.Name(),k.DB.Error.Error())
+		t.Fail()
+	}
+
+	t.Log(t.Name(),string(a))
+
+
 }

@@ -99,7 +99,7 @@ func (k *KeyModel) Insert(v interface{}) error {
 
 }
 
-func (k *KeyModel) SelectAllKeys() ( error , []KeyProperties) {
+func (k *KeyModel) SelectAll() ( error , []KeyProperties) {
 	defer k.Close()
 	_,err := k.Connect()
 
@@ -113,5 +113,41 @@ func (k *KeyModel) SelectAllKeys() ( error , []KeyProperties) {
 	k.DB = k.DB.Find(&s)
 
 	return nil, s
+}
+
+func (k *KeyModel) GetPrivateBytes(keyName string , owner string) (error, []byte) {
+	defer k.Close()
+	_,err := k.Connect()
+
+	if err != nil {
+		k.DB = nil
+		return err, nil
+	}
+
+	kp := &KeyProperties{}
+
+	k.DB = k.DB.Find(kp, KeyProperties{KeyName: keyName , OwnerName:owner})
+
+	return nil, kp.PrivateKey;
+
+}
+
+
+
+func (k *KeyModel) GetPublicBytes(keyName string , owner string) (error, []byte) {
+	defer k.Close()
+	_,err := k.Connect()
+
+	if err != nil {
+		k.DB = nil
+		return err, nil
+	}
+
+	kp := &KeyProperties{}
+
+	k.DB = k.DB.Find(kp, KeyProperties{KeyName: keyName , OwnerName:owner})
+
+	return nil, kp.PublicKey;
+
 }
 
