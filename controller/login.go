@@ -12,7 +12,7 @@ import (
 )
 
 // jwtCustomClaims are custom claims extending default ones.
-type jwtCustomClaims struct {
+type JwtCustomClaims struct {
 	Name  string `json:"name"`
 	jwt.StandardClaims
 }
@@ -24,7 +24,38 @@ type LoginStruct struct {
 
 
 func CreateUserApi(c echo.Context) error {
-	return nil;
+
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*JwtCustomClaims)
+	name := claims.Name
+
+	m := &model.OwnerModel{}
+
+	e,o := m.CheckIfPresent(name)
+
+	if e != nil {
+		return echo.ErrUnauthorized
+	}
+
+	if !o.Admin {
+		return echo.ErrUnauthorized
+	}
+
+
+	inp := json.NewDecoder(c.Request().Body)
+
+	l := model.OwnerDetails{}
+
+	e = inp.Decode(&l)
+
+	if e != nil {
+		return c.String(http.StatusBadRequest, e.Error())
+	}
+
+
+
+	return c.String(http.StatusOK, "Welcome "+name+"!")
+
 }
 
 
@@ -39,7 +70,7 @@ func Login(c echo.Context) error {
 	e := inp.Decode(&l)
 
 	if e != nil {
-		return c.String(http.StatusNotFound, e.Error())
+		return c.String(http.StatusBadRequest, e.Error())
 	}
 
 	username := l.Login
@@ -56,10 +87,10 @@ func Login(c echo.Context) error {
 	}
 
 	// Set custom claims
-	claims := &jwtCustomClaims{
+	claims := &JwtCustomClaims{
 		username,
 		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Second * 60).Unix(),
+			ExpiresAt: time.Now().Add(time.Second * 300).Unix(),
 		},
 	}
 

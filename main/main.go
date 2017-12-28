@@ -6,6 +6,7 @@ import (
 	"keymanager/controller"
 	"os"
 	"keymanager/configuration"
+	"github.com/labstack/echo/middleware"
 )
 
 func main() {
@@ -21,5 +22,22 @@ func main() {
 
 	e := echo.New()
 	e.POST("/login",controller.LoginApi)
+
+
+	r := e.Group("/api")
+
+	// Configure middleware with the custom claims type
+	//TODO: use root of trust here
+	config := middleware.JWTConfig{
+		Claims:     &controller.JwtCustomClaims{},
+		SigningKey: []byte("secret"),
+	}
+
+	r.Use(middleware.JWTWithConfig(config))
+
+	r.POST("/createuser",controller.CreateUser)
+
+
 	e.Logger.Fatal(e.Start(":1323"))
+
 }

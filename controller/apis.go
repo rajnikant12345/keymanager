@@ -21,7 +21,7 @@ func LoginApi(c echo.Context) error {
 
 
 func CreateUser(c echo.Context) error {
-	return nil
+	return CreateUserApi(c)
 }
 
 
