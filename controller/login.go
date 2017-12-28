@@ -52,9 +52,16 @@ func CreateUserApi(c echo.Context) error {
 		return c.String(http.StatusBadRequest, e.Error())
 	}
 
+	l.Password = fmt.Sprintf("%X",sha256.Sum256([]byte(l.Password)))
+
+	e = m.Insert(&l)
+
+	if e != nil {
+		return c.String(http.StatusBadRequest, e.Error())
+	}
 
 
-	return c.String(http.StatusOK, "Welcome "+name+"!")
+	return c.String(http.StatusOK, "Welcome "+l.Name+"!")
 
 }
 
@@ -90,7 +97,7 @@ func Login(c echo.Context) error {
 	claims := &JwtCustomClaims{
 		username,
 		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Second * 300).Unix(),
+			ExpiresAt: time.Now().Add(time.Hour * 300).Unix(),
 		},
 	}
 
