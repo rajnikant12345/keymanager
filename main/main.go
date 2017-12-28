@@ -1,8 +1,25 @@
 package main
 
-import "fmt"
+import (
+
+	"github.com/labstack/echo"
+	"keymanager/controller"
+	"os"
+	"keymanager/configuration"
+)
 
 func main() {
-	fmt.Println("Hello Key Manager")
-	fmt.Println("PLease run it now")
+
+	os.Setenv("DBNAME","Keymanager")
+	os.Setenv("DBUSR","root")
+	os.Setenv("DBPASSWORD","root")
+	os.Setenv("DBHOST","0.0.0.0")
+	os.Setenv("DBPORT","3456")
+
+
+	configuration.InitializeConfiguration()
+
+	e := echo.New()
+	e.POST("/CreateKeyApi",controller.CreateKey)
+	e.Logger.Fatal(e.Start(":1323"))
 }
