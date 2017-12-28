@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"time"
 	"fmt"
+	"strings"
 )
 
 // jwtCustomClaims are custom claims extending default ones.
@@ -23,7 +24,7 @@ type LoginStruct struct {
 }
 
 
-func CreateUserApi(c echo.Context) error {
+func ValidateAdmin(c echo.Context) (error, string) {
 
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(*JwtCustomClaims)
@@ -34,13 +35,67 @@ func CreateUserApi(c echo.Context) error {
 	e,o := m.CheckIfPresent(name)
 
 	if e != nil {
-		return echo.ErrUnauthorized
+		return echo.ErrUnauthorized,""
 	}
 
 	if !o.Admin {
-		return echo.ErrUnauthorized
+		return echo.ErrUnauthorized,""
 	}
 
+	return nil,name
+
+}
+
+
+func DropUserApi(c echo.Context) error {
+	e,use := ValidateAdmin(c)
+
+	if e != nil {
+		return e
+	}
+
+	m := &model.OwnerModel{}
+
+	inp := json.NewDecoder(c.Request().Body)
+
+	l := model.OwnerDetails{}
+
+	e = inp.Decode(&l)
+
+	if e != nil {
+		return c.String(http.StatusBadRequest, e.Error())
+	}
+
+	if strings.ToUpper(l.Name) == "ADMIN" {
+		return c.String(http.StatusBadRequest, "Cannot delete admin")
+	}
+
+	if strings.ToUpper(use) == strings.ToUpper(l.Name) {
+		return c.String(http.StatusBadRequest, "Cannot delete itself")
+	}
+
+
+	e = m.Delete(l.Name)
+
+	if e != nil {
+		return c.String(http.StatusBadRequest, e.Error())
+	}
+
+	return http.StatusOK
+
+
+}
+
+
+func CreateUserApi(c echo.Context) error {
+
+	e := ValidateAdmin(c)
+
+	if e != nil {
+		return e
+	}
+
+	m := &model.OwnerModel{}
 
 	inp := json.NewDecoder(c.Request().Body)
 

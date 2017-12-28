@@ -95,6 +95,21 @@ func (k *OwnerModel) SelectAll() ( error , []OwnerDetails) {
 }
 
 
+func (k *OwnerModel) Delete(owner string) (error) {
+	defer k.Close()
+	_,err := k.Connect()
+
+	if err != nil {
+		k.DB = nil
+		return err
+	}
+
+	k.DB = k.DB.Where("name = ?",owner).Delete(OwnerDetails{})
+
+	return nil;
+}
+
+
 func (k *OwnerModel) CheckIfPresent(owner string) (error, *OwnerDetails) {
 	defer k.Close()
 	_,err := k.Connect()

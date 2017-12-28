@@ -102,3 +102,22 @@ func TestOwnerModel_Verify(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestOwnerModel_Delete(t *testing.T) {
+
+	t.SkipNow()
+
+	k := new(OwnerModel)
+
+	e := k.Delete("admin")
+
+	if e != nil {
+		t.Log(t.Name(),e.Error())
+		t.Fail()
+	}
+
+	if k.DB.Error != nil {
+		t.Log(t.Name(),k.DB.Error.Error())
+		t.Fail()
+	}
+}
