@@ -20,6 +20,6 @@ func main() {
 	configuration.InitializeConfiguration()
 
 	e := echo.New()
-	e.POST("/CreateKeyApi",controller.CreateKey)
+	e.POST("/login",controller.LoginApi)
 	e.Logger.Fatal(e.Start(":1323"))
 }

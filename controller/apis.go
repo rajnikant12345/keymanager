@@ -10,12 +10,18 @@ func CreateKeyApi(c echo.Context) error {
 }
 
 
+func DropKeyApi(c echo.Context) error {
+	return DropKey(c)
+}
+
+
 func LoginApi(c echo.Context) error {
-	return nil
+	return Login(c)
 }
 
 
 func CreateUser(c echo.Context) error {
 	return nil
 }
+
 

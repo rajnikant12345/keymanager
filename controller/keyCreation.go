@@ -32,6 +32,10 @@ func CreateASymmetricKey(c *CreateKeyStruct) {
 
 }
 
+func DropKey ( echo.Context) error {
+	return nil
+}
+
 
 
 func CreateKey(c echo.Context) error {
@@ -46,12 +50,12 @@ func CreateKey(c echo.Context) error {
 	case "S":
 		e := CreateSymmetricKey(&keyinput)
 		if e != nil {
-			return c.String(http.StatusNotAcceptable, e.Error())
+			return c.String(http.StatusNotFound, e.Error())
 		}
 	case "A":
 		CreateASymmetricKey(&keyinput)
 	default:
-		return c.String(http.StatusNotAcceptable, "invalid key type")
+		return c.String(http.StatusNotFound, "invalid key type")
 	}
 	return c.String(http.StatusOK, "Success")
 }

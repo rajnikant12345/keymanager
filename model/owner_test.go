@@ -49,9 +49,10 @@ func TestOwnerModel_Insert(t *testing.T) {
 	k := new(OwnerModel)
 	k1 := OwnerDetails{}
 
-	k1.Name = "rajni"
+	k1.Name = "admin"
 	k1.Admin = true
 	k1.Crypto = true
+	k1.Password = "312433C28349F63C4F387953FF337046E794BEA0F9B9EBFCB08E90046DED9C76"
 
 	k.Insert(&k1)
 
@@ -81,7 +82,19 @@ func TestOwnerModel_SelectKeys(t *testing.T) {
 func TestOwnerModel_CheckIfPresent(t *testing.T) {
 	k := new(OwnerModel)
 
-	k.CheckIfPresent("rajni")
+	k.CheckIfPresent("admin")
+
+
+	if k.DB.Error != nil {
+		t.Log(t.Name(),k.DB.Error.Error())
+		t.Fail()
+	}
+}
+
+func TestOwnerModel_Verify(t *testing.T) {
+	k := new(OwnerModel)
+
+	k.Verify("admin","312433C28349F63C4F387953FF337046E794BEA0F9B9EBFCB08E90046DED9C76")
 
 
 	if k.DB.Error != nil {

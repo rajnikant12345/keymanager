@@ -9,6 +9,7 @@ type OwnerDetails struct {
 	Name string
 	Admin bool
 	Crypto bool
+	Password string
 }
 
 
@@ -18,6 +19,7 @@ type OwnerModel struct {
 
 
 func (k *OwnerModel) Connect() (*gorm.DB, error) {
+
 	dbusr := configuration.ConfMap["DBUSR"]
 	dbpassword := configuration.ConfMap["DBPASSWORD"]
 	host := configuration.ConfMap["DBHOST"]
@@ -107,4 +109,26 @@ func (k *OwnerModel) CheckIfPresent(owner string) (error, *OwnerDetails) {
 	k.DB = k.DB.Find(kp, OwnerDetails{Name: owner})
 
 	return nil, kp;
+}
+
+
+
+func (k *OwnerModel) Verify(owner string , password string) bool {
+	defer k.Close()
+	_,err := k.Connect()
+
+	if err != nil {
+		k.DB = nil
+		return false
+	}
+
+	kp := &OwnerDetails{}
+
+	k.DB = k.DB.Find(kp, OwnerDetails{Name: owner, Password:password})
+
+	if k.DB.Error != nil {
+		return false
+	}
+
+	return true
 }
