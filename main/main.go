@@ -37,6 +37,7 @@ func main() {
 
 	r.POST("/createuser",controller.CreateUser)
 	r.POST("/deleteuser",controller.DeleteUser)
+	r.PATCH("/updateuser",controller.UpdateUser)
 	r.GET("/listusers",controller.ListUsers)
 
 

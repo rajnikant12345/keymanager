@@ -32,5 +32,8 @@ func ListUsers(c echo.Context) error {
 	return ListUsersApi(c)
 }
 
+func UpdateUser(c echo.Context) error {
+	return UpdateUserApi(c)
+}
 
 

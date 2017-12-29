@@ -116,6 +116,11 @@ func TestOwnerModel_Verify(t *testing.T) {
 	}
 }
 
+
+
+
+
+
 func TestOwnerModel_Delete(t *testing.T) {
 
 	t.SkipNow()

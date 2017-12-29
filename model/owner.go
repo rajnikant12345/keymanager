@@ -3,6 +3,7 @@ package model
 import (
 	"github.com/jinzhu/gorm"
 	"keymanager/configuration"
+	"fmt"
 )
 
 type OwnerDetails struct {
@@ -136,6 +137,37 @@ func (k *OwnerModel) Delete(owner string) (error) {
 	}
 
 	return nil;
+}
+
+func (k *OwnerModel) Update(owner *OwnerDetails ) error {
+	defer k.Close()
+
+	err,kp := k.CheckIfPresent(owner.Name)
+
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(*kp)
+
+	//kp.Password = owner.Password
+	kp.Admin = owner.Admin
+	kp.Crypto = owner.Crypto
+
+	_,err = k.Connect()
+
+	if err != nil {
+		k.DB = nil
+		return err
+	}
+
+	k.DB = k.DB.Save(kp)
+
+	if k.DB.Error != nil {
+		return k.DB.Error
+	}
+
+	return nil
 }
 
 

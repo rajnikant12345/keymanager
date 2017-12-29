@@ -127,7 +127,7 @@ func Login(c echo.Context) error {
 	e := inp.Decode(&l)
 
 	if e != nil {
-		return c.String(http.StatusBadRequest, e.Error())
+		return echo.ErrUnauthorized
 	}
 
 	username := l.Login
@@ -189,4 +189,41 @@ func ListUsersApi(c echo.Context) error {
 	return c.JSON(http.StatusOK,&d)
 
 
+}
+
+func UpdateUserApi(c echo.Context) error {
+	e,use := ValidateAdmin(c)
+
+	if e != nil {
+		return e
+	}
+
+	m := &model.OwnerModel{}
+
+	inp := json.NewDecoder(c.Request().Body)
+
+	l := model.OwnerDetails{}
+
+	e = inp.Decode(&l)
+
+	if e != nil {
+		return c.String(http.StatusBadRequest, e.Error())
+	}
+
+	if strings.ToUpper(l.Name) == "ADMIN" {
+		return c.String(http.StatusNotAcceptable, "Cannot update admin")
+	}
+
+	if strings.ToUpper(use) == strings.ToUpper(l.Name) {
+		return c.String(http.StatusNotAcceptable, "Cannot update itself")
+	}
+
+
+	e = m.Update(&l)
+
+	if e != nil {
+		return c.String(http.StatusNotAcceptable, e.Error())
+	}
+
+	return c.JSON(http.StatusOK,echo.Map{"Status":"Success"})
 }
