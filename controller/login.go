@@ -81,7 +81,7 @@ func DropUserApi(c echo.Context) error {
 		return c.String(http.StatusBadRequest, e.Error())
 	}
 
-	return http.StatusOK
+	return c.JSON(http.StatusOK,echo.Map{"Status":"Success"})
 
 
 }
@@ -89,7 +89,7 @@ func DropUserApi(c echo.Context) error {
 
 func CreateUserApi(c echo.Context) error {
 
-	e := ValidateAdmin(c)
+	e,_ := ValidateAdmin(c)
 
 	if e != nil {
 		return e
@@ -116,7 +116,7 @@ func CreateUserApi(c echo.Context) error {
 	}
 
 
-	return c.String(http.StatusOK, "Welcome "+l.Name+"!")
+	return c.JSON(http.StatusOK,echo.Map{"Status":"Success","User":l.Name})
 
 }
 
@@ -138,7 +138,9 @@ func Login(c echo.Context) error {
 	username := l.Login
 	password := l.Password
 
+
 	sum := sha256.Sum256([]byte(password))
+
 
 	s := fmt.Sprintf("%X",sum)
 

@@ -22,6 +22,9 @@ func TestOwnerModel_Connect(t *testing.T) {
 
 
 func TestOwnerModel_DropTable(t *testing.T) {
+
+	//t.SkipNow()
+
 	k := new(OwnerModel)
 	e := k.DropTable()
 
@@ -40,6 +43,7 @@ func TestOwnerModel_DropTable(t *testing.T) {
 
 func TestOwnerModel_CreateTable(t *testing.T) {
 
+	//t.SkipNow()
 	k := new(OwnerModel)
 
 	k.CreateTable()
@@ -54,6 +58,7 @@ func TestOwnerModel_CreateTable(t *testing.T) {
 
 
 func TestOwnerModel_Insert(t *testing.T) {
+	//t.SkipNow()
 	k := new(OwnerModel)
 	k1 := OwnerDetails{}
 

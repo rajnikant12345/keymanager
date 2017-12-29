@@ -6,10 +6,10 @@ import (
 )
 
 type OwnerDetails struct {
-	Name string
-	Admin bool
-	Crypto bool
-	Password string
+	Name string   `gorm:"not null;unique;primary_key"`
+	Admin bool     `gorm:"not null"`
+	Crypto bool    `gorm:"not null"`
+	Password string `gorm:"not null"`
 }
 
 
@@ -55,6 +55,10 @@ func (k *OwnerModel) DropTable() error {
 	}
 	k.DB = k.DB.DropTable(&OwnerDetails{})
 
+	if k.DB.Error != nil {
+		return k.DB.Error
+	}
+
 	return  nil
 
 }
@@ -68,6 +72,10 @@ func (k *OwnerModel) CreateTable() error {
 		return err
 	}
 	k.DB = k.DB.CreateTable(&OwnerDetails{})
+
+	if k.DB.Error != nil {
+		return k.DB.Error
+	}
 	return nil
 }
 
@@ -80,7 +88,13 @@ func (k *OwnerModel) Insert(v interface{}) error {
 		return err
 	}
 	s := v.(*OwnerDetails)
+
 	k.DB = k.DB.Create(s)
+
+	if k.DB.Error != nil {
+		return k.DB.Error
+	}
+
 	return nil
 
 }
@@ -98,6 +112,10 @@ func (k *OwnerModel) SelectAll() ( error , []OwnerDetails) {
 
 	k.DB = k.DB.Find(&s)
 
+	if k.DB.Error != nil {
+		return k.DB.Error, nil
+	}
+
 	return nil, s
 }
 
@@ -112,6 +130,10 @@ func (k *OwnerModel) Delete(owner string) (error) {
 	}
 
 	k.DB = k.DB.Where("name = ?",owner).Delete(OwnerDetails{})
+
+	if k.DB.Error != nil {
+		return k.DB.Error
+	}
 
 	return nil;
 }
@@ -130,6 +152,11 @@ func (k *OwnerModel) CheckIfPresent(owner string) (error, *OwnerDetails) {
 
 	k.DB = k.DB.Find(kp, OwnerDetails{Name: owner})
 
+	if k.DB.Error != nil {
+		return k.DB.Error, nil
+	}
+
+
 	return nil, kp;
 }
 
@@ -145,6 +172,8 @@ func (k *OwnerModel) Verify(owner string , password string) bool {
 	}
 
 	kp := &OwnerDetails{}
+
+
 
 	k.DB = k.DB.Find(kp, OwnerDetails{Name: owner, Password:password})
 

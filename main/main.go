@@ -36,6 +36,7 @@ func main() {
 	r.Use(middleware.JWTWithConfig(config))
 
 	r.POST("/createuser",controller.CreateUser)
+	r.POST("/deleteuser",controller.DeleteUser)
 
 
 	e.Logger.Fatal(e.Start(":1323"))
