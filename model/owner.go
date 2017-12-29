@@ -110,7 +110,7 @@ func (k *OwnerModel) SelectAll() ( error , []OwnerDetails) {
 
 	s := make([]OwnerDetails,0)
 
-	k.DB = k.DB.Find(&s)
+	k.DB = k.DB.Select("name, admin, crypto").Find(&s)
 
 	if k.DB.Error != nil {
 		return k.DB.Error, nil

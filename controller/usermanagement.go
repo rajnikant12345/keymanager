@@ -46,7 +46,6 @@ func ValidateAdmin(c echo.Context) (error, string) {
 
 }
 
-
 func DropUserApi(c echo.Context) error {
 	e,use := ValidateAdmin(c)
 
@@ -86,7 +85,6 @@ func DropUserApi(c echo.Context) error {
 
 }
 
-
 func CreateUserApi(c echo.Context) error {
 
 	e,_ := ValidateAdmin(c)
@@ -119,9 +117,6 @@ func CreateUserApi(c echo.Context) error {
 	return c.JSON(http.StatusOK,echo.Map{"Status":"Success","User":l.Name})
 
 }
-
-
-
 
 func Login(c echo.Context) error {
 
@@ -173,4 +168,25 @@ func Login(c echo.Context) error {
 	})
 
 	return echo.ErrUnauthorized
+}
+
+func ListUsersApi(c echo.Context) error {
+
+	e,_ := ValidateAdmin(c)
+
+	if e != nil {
+		return e
+	}
+
+	m := &model.OwnerModel{}
+
+	e,d := m.SelectAll()
+
+	if e != nil {
+		return c.String(http.StatusBadRequest, e.Error())
+	}
+
+	return c.JSON(http.StatusOK,&d)
+
+
 }

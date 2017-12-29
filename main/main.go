@@ -37,6 +37,7 @@ func main() {
 
 	r.POST("/createuser",controller.CreateUser)
 	r.POST("/deleteuser",controller.DeleteUser)
+	r.GET("/listusers",controller.ListUsers)
 
 
 	e.Logger.Fatal(e.Start(":1323"))

@@ -28,5 +28,9 @@ func DeleteUser(c echo.Context) error {
 	return DropUserApi(c)
 }
 
+func ListUsers(c echo.Context) error {
+	return ListUsersApi(c)
+}
+
 
 
