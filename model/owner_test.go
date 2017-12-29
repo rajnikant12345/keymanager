@@ -23,7 +23,15 @@ func TestOwnerModel_Connect(t *testing.T) {
 
 func TestOwnerModel_DropTable(t *testing.T) {
 	k := new(OwnerModel)
-	k.DropTable()
+	e := k.DropTable()
+
+
+	if e != nil {
+		t.Log(t.Name(),e.Error())
+		t.Fail()
+	}
+
+
 	if k.DB.Error != nil {
 		t.Log(t.Name(),k.DB.Error.Error())
 		t.Fail()

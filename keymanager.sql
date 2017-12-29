@@ -1,4 +1,7 @@
+
 show schemas;
+
+use Keymanager;
 
 show tables;
 

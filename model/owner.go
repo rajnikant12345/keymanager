@@ -45,10 +45,17 @@ func (k *OwnerModel) Close()  {
 }
 
 
-func (k *OwnerModel) DropTable() {
-	k.Connect()
+func (k *OwnerModel) DropTable() error {
 	defer k.Close()
+	_,err := k.Connect()
+
+	if err != nil {
+		k.DB = nil
+		return err
+	}
 	k.DB = k.DB.DropTable(&OwnerDetails{})
+
+	return  nil
 
 }
 
