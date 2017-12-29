@@ -3,7 +3,6 @@ package model
 import (
 	"github.com/jinzhu/gorm"
 	"keymanager/configuration"
-	"fmt"
 )
 
 type OwnerDetails struct {
@@ -148,9 +147,9 @@ func (k *OwnerModel) Update(owner *OwnerDetails ) error {
 		return err
 	}
 
-	fmt.Println(*kp)
+	//fmt.Println(*kp)
 
-	//kp.Password = owner.Password
+	kp.Password = owner.Password
 	kp.Admin = owner.Admin
 	kp.Crypto = owner.Crypto
 
@@ -169,6 +168,12 @@ func (k *OwnerModel) Update(owner *OwnerDetails ) error {
 
 	return nil
 }
+
+
+
+
+
+
 
 
 func (k *OwnerModel) CheckIfPresent(owner string) (error, *OwnerDetails) {

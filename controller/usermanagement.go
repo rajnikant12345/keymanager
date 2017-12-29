@@ -218,6 +218,7 @@ func UpdateUserApi(c echo.Context) error {
 		return c.String(http.StatusNotAcceptable, "Cannot update itself")
 	}
 
+	l.Password = fmt.Sprintf("%X",sha256.Sum256([]byte(l.Password)))
 
 	e = m.Update(&l)
 
