@@ -6,10 +6,11 @@ import (
 )
 
 type OwnerDetails struct {
-	Name string   `gorm:"not null;unique;primary_key"`
+	Name string   `gorm:"primary_key"`
 	Admin bool     `gorm:"not null"`
 	Crypto bool    `gorm:"not null"`
 	Password string `gorm:"not null"`
+
 }
 
 

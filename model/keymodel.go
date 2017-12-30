@@ -12,9 +12,10 @@ import (
 )
 
 type KeyProperties struct {
-	KeyUniqueId []byte	`gorm:"not null;unique;primary_key"`
+	Id uint			`gorm:"primary_key"`
 	KeyName string		`gorm:"not null;unique"`
-	OwnerName string	`gorm:"not null"`
+	OwnerDetails OwnerDetails `gorm:"ForeignKey:OwnerName;AssociationForeignKey:name"`
+	OwnerName string	`gorm:"not null;unique"`
 	KeyType string		`gorm:"not null"`
 	Algorithm string	`gorm:"not null"`
 	Size int		`gorm:"not null"`
@@ -89,7 +90,7 @@ func (k *KeyModel) CreateTable() error {
 		k.DB = nil
 		return err
 	}
-	k.DB = k.DB.CreateTable(&KeyProperties{})
+	k.DB = k.DB.Debug().CreateTable(&KeyProperties{}).AddForeignKey("owner_name", "owner_details(name)", "RESTRICT", "RESTRICT")
 	return nil
 }
 
@@ -105,6 +106,11 @@ func (k *KeyModel) Insert(v interface{}) error {
 
 	s := v.(*KeyProperties)
 	k.DB = k.DB.Create(s)
+
+	if k.DB.Error != nil {
+		return k.DB.Error
+	}
+
 	return nil
 
 }
@@ -136,7 +142,7 @@ func (k *KeyModel) GetPrivateBytes(keyName string , owner string) (error, []byte
 
 	kp := &KeyProperties{}
 
-	k.DB = k.DB.Find(kp, KeyProperties{KeyName: keyName , OwnerName:owner})
+	//k.DB = k.DB.Find(kp, KeyProperties{KeyName: keyName , Owner:owner})
 
 	return nil, kp.PrivateKey;
 
@@ -155,7 +161,7 @@ func (k *KeyModel) GetPublicBytes(keyName string , owner string) (error, []byte)
 
 	kp := &KeyProperties{}
 
-	k.DB = k.DB.Find(kp, KeyProperties{KeyName: keyName , OwnerName:owner})
+	//k.DB = k.DB.Find(kp, KeyProperties{KeyName: keyName , Owner:owner})
 
 	return nil, kp.PublicKey;
 

@@ -1,0 +1,1 @@
+curl -X POST -H 'Content-Type: application/json' -d '{"Login":"admin","Password":"asdf1234"}' localhost:1323/login
