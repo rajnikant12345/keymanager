@@ -9,14 +9,14 @@ func TestCreateRSAKey1024(t *testing.T) {
 		t.Fail()
 	}
 
-	if a.name != "rajni" {
+	if a.Name != "rajni" {
 		t.Fail()
 	}
 
 
-	t.Log(string(a.public))
+	t.Log(string(a.Public))
 
-	t.Log(string(a.private))
+	t.Log(string(a.Private))
 
 }
 
@@ -28,16 +28,36 @@ func TestCreateRSAKey2048(t *testing.T) {
 		t.Fail()
 	}
 
-	if a.name != "rajni" {
+	if a.Name != "rajni" {
 		t.Fail()
 	}
 
 
-	t.Log(string(a.public))
+	t.Log(string(a.Public))
 
-	t.Log(string(a.private))
+	t.Log(string(a.Private))
 
 }
+
+
+func TestCreateRSAKey3072(t *testing.T) {
+	a,b := CreateRSAKey("rajni",3072)
+
+	if b != nil {
+		t.Fail()
+	}
+
+	if a.Name != "rajni" {
+		t.Fail()
+	}
+
+
+	t.Log(string(a.Public))
+
+	t.Log(string(a.Private))
+
+}
+
 
 
 func TestCreateRSAKey4096(t *testing.T) {
@@ -47,13 +67,13 @@ func TestCreateRSAKey4096(t *testing.T) {
 		t.Fail()
 	}
 
-	if a.name != "rajni" {
+	if a.Name != "rajni" {
 		t.Fail()
 	}
 
 
-	t.Log(string(a.public))
+	t.Log(string(a.Public))
 
-	t.Log(string(a.private))
+	t.Log(string(a.Private))
 
 }

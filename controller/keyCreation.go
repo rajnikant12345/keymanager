@@ -62,6 +62,32 @@ func validateSymmetricKey(m map[string]string) error {
 
 
 func validateASymmetricKey(m map[string]string) error {
+	var v Helper
+
+	if m["algorithm"] == "rsa" {
+		v = new(RsaHelper)
+	}else {
+		return errors.New("Unsupported algo.")
+	}
+
+	e := v.ValidateKeySize(m)
+	if e != nil {
+		return e
+	}
+	e = v.ValidateDeletable(m)
+	if e != nil {
+		return e
+	}
+	e = v.ValidateExportable(m)
+	if e != nil {
+		return e
+	}
+
+	e = v.CreateKey(m)
+	if e != nil {
+		return e
+	}
+
 	return nil
 }
 
@@ -152,3 +178,5 @@ func CreateKeyApi(c echo.Context) error {
 
 	return c.JSON(http.StatusOK,&m)
 }
+
+

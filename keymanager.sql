@@ -17,4 +17,3 @@ describe owner_details;
 select * from key_properties;
 
 select * from owner_details;
-

@@ -9,10 +9,10 @@ import (
 )
 
 type Rsa struct {
-	name string
+	Name string
 	Size int
-	public []byte
-	private []byte
+	Public []byte
+	Private []byte
 }
 
 func savePEMKey(rsa *Rsa, key *rsa.PrivateKey) {
@@ -23,7 +23,7 @@ func savePEMKey(rsa *Rsa, key *rsa.PrivateKey) {
 		Bytes: x509.MarshalPKCS1PrivateKey(key),
 	}
 
-	rsa.private = pem.EncodeToMemory(privateKey)
+	rsa.Private = pem.EncodeToMemory(privateKey)
 
 }
 
@@ -37,7 +37,7 @@ func savePublicPEMKey(rsa *Rsa, pubkey rsa.PublicKey) {
 	}
 
 
-	rsa.public = pem.EncodeToMemory( pemkey)
+	rsa.Public = pem.EncodeToMemory( pemkey)
 }
 
 
@@ -60,7 +60,7 @@ func CreateRSAKey (name string , size int) (*Rsa , error) {
 
 	savePublicPEMKey(rsap, publicKey)
 
-	rsap.name = name
+	rsap.Name = name
 
 	return rsap , nil
 
