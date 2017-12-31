@@ -32,3 +32,6 @@ func CreateKey(c echo.Context) error {
 	return CreateKeyApi(c)
 }
 
+func DeleteKey(c echo.Context) error {
+	return DeleteKeyApi(c)
+}

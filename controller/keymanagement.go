@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"keymanager/kmerrors"
 	"errors"
+	"keymanager/model"
 )
 
 /*
@@ -110,6 +111,39 @@ func validatedata(m map[string]string) error{
 }
 
 
+func DeleteKeyApi(c echo.Context) error {
+	var m  = make(map[string]string)
+
+	e,_ := ValidateAdmin(c)
+
+	if e != nil {
+		return e
+	}
+
+	inp := json.NewDecoder(c.Request().Body)
+
+	e = inp.Decode(&m)
+
+	if e != nil {
+		return c.JSON(http.StatusPartialContent,&kmerrors.ErrorStruct{Value:e.Error(),Action:"PLease enter valid JSON."})
+	}
+
+	if _,ok := m["keyname"];!ok {
+
+		return c.JSON(http.StatusBadRequest,&kmerrors.ErrorStruct{Value:"keyname missing",Action:"PLease enter valid keyname."})
+	}
+
+	mod := &model.KeyModel{}
+
+	e = mod.Delete( m["keyname"])
+
+	if e != nil {
+		return c.JSON(http.StatusBadRequest,&kmerrors.ErrorStruct{Value:e.Error(),
+			Action:"PLease check error."})
+	}
+
+	return nil
+}
 
 
 func CreateKeyApi(c echo.Context) error {

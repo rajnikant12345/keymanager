@@ -23,7 +23,6 @@ func main() {
 	e := echo.New()
 	e.POST("/login",controller.LoginApi)
 
-
 	r := e.Group("/api")
 
 	// Configure middleware with the custom claims type
@@ -36,12 +35,16 @@ func main() {
 	r.Use(middleware.JWTWithConfig(config))
 
 	r.POST("/createuser",controller.CreateUser)
+
 	r.POST("/deleteuser",controller.DeleteUser)
+
 	r.PATCH("/updateuser",controller.UpdateUser)
+
 	r.GET("/listusers",controller.ListUsers)
 
-
 	r.POST("/createkey",controller.CreateKey)
+
+	r.POST("/deletekey",controller.DeleteKey)
 
 	e.Logger.Fatal(e.Start(":1323"))
 
