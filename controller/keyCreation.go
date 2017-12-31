@@ -4,58 +4,30 @@ import (
 	"github.com/labstack/echo"
 	"net/http"
 	"encoding/json"
-	"keymanager/keys/aes"
 )
 
-type CreateKeyStruct struct {
+func CreateKeyApi(c echo.Context) error {
 
-	Keyname string
-	KeySize int
-	KeyOwner string
-	KeyType string
-	Algorithm string
-	Deletable bool
-	Exportable bool
+	var m  = make(map[string]string)
 
-}
+	e,_ := ValidateAdmin(c)
 
-func CreateSymmetricKey(c *CreateKeyStruct) error {
-	_,e := aes.CreateAESKey(c.Keyname, c.KeySize)
 	if e != nil {
 		return e
 	}
-	return nil
-}
 
+	inp := json.NewDecoder(c.Request().Body)
 
-func CreateASymmetricKey(c *CreateKeyStruct) {
+	e = inp.Decode(&m)
 
-}
-
-func DropKey ( echo.Context) error {
-	return nil
-}
-
-
-
-func CreateKey(c echo.Context) error {
-
-	input := json.NewDecoder(c.Request().Body)
-
-	keyinput := CreateKeyStruct{}
-
-	input.Decode(&keyinput)
-
-	switch keyinput.KeyType {
-	case "S":
-		e := CreateSymmetricKey(&keyinput)
-		if e != nil {
-			return c.String(http.StatusNotFound, e.Error())
-		}
-	case "A":
-		CreateASymmetricKey(&keyinput)
-	default:
-		return c.String(http.StatusNotFound, "invalid key type")
+	if e != nil {
+		return c.String(http.StatusBadRequest, e.Error())
 	}
-	return c.String(http.StatusOK, "Success")
+
+
+	if _,ok := m["keytype"];!ok {
+		return c.JSON(http.StatusOK,&m)
+	}
+
+	return c.JSON(http.StatusOK,&m)
 }

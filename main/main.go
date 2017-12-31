@@ -41,6 +41,8 @@ func main() {
 	r.GET("/listusers",controller.ListUsers)
 
 
+	r.POST("/createkey",controller.CreateKey)
+
 	e.Logger.Fatal(e.Start(":1323"))
 
 }

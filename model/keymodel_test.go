@@ -29,7 +29,7 @@ func TestKeyModel_Connect(t *testing.T) {
 
 func TestKeyModel_DropTable(t *testing.T) {
 
-	t.SkipNow()
+	//t.SkipNow()
 	k := new(KeyModel)
 	k.DropTable()
 	if k.DB.Error != nil {
@@ -123,3 +123,5 @@ func TestKeyModel_GetPrivateBytes(t *testing.T) {
 
 
 }
+
+

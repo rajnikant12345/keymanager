@@ -10,6 +10,7 @@ import (
 	"time"
 	"fmt"
 	"strings"
+	"keymanager/kmerrors"
 )
 
 // jwtCustomClaims are custom claims extending default ones.
@@ -62,25 +63,26 @@ func DropUserApi(c echo.Context) error {
 	e = inp.Decode(&l)
 
 	if e != nil {
-		return c.String(http.StatusBadRequest, e.Error())
+		return c.JSON(http.StatusPartialContent,&kmerrors.ErrorStruct{Value:e.Error(),Action:"PLease enter valid JSON."})
 	}
 
 	if strings.ToUpper(l.Name) == "ADMIN" {
-		return c.String(http.StatusBadRequest, "Cannot delete admin")
+		return c.JSON(http.StatusBadRequest,&kmerrors.ErrorStruct{Value:"Cannot Delete Admin",Action:"Delete Valid User."})
 	}
 
 	if strings.ToUpper(use) == strings.ToUpper(l.Name) {
-		return c.String(http.StatusBadRequest, "Cannot delete itself")
+		return c.JSON(http.StatusBadRequest,&kmerrors.ErrorStruct{Value:"User Cannot Delete Itself",Action:"Delete Valid User."})
 	}
 
 
 	e = m.Delete(l.Name)
 
 	if e != nil {
-		return c.String(http.StatusBadRequest, e.Error())
+		return c.JSON(http.StatusBadRequest,&kmerrors.ErrorStruct{Value:e.Error(),Action:"See Error Message."})
 	}
 
-	return c.JSON(http.StatusOK,echo.Map{"Status":"Success"})
+	return c.JSON(http.StatusOK,&kmerrors.ErrorStruct{Value:"Success",Action:"User"+ l.Name +"Dropped."})
+
 
 
 }
@@ -102,7 +104,7 @@ func CreateUserApi(c echo.Context) error {
 	e = inp.Decode(&l)
 
 	if e != nil {
-		return c.String(http.StatusBadRequest, e.Error())
+		return c.JSON(http.StatusPartialContent,&kmerrors.ErrorStruct{Value:e.Error(),Action:"PLease enter valid JSON."})
 	}
 
 	l.Password = fmt.Sprintf("%X",sha256.Sum256([]byte(l.Password)))
@@ -110,11 +112,11 @@ func CreateUserApi(c echo.Context) error {
 	e = m.Insert(&l)
 
 	if e != nil {
-		return c.String(http.StatusBadRequest, e.Error())
+		return c.JSON(http.StatusBadRequest,&kmerrors.ErrorStruct{Value:e.Error(),Action:"See Error Message."})
 	}
 
 
-	return c.JSON(http.StatusOK,echo.Map{"Status":"Success","User":l.Name})
+	return c.JSON(http.StatusOK,&kmerrors.ErrorStruct{Value:"Success",Action:"User"+ l.Name +"Created."})
 
 }
 

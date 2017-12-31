@@ -14,7 +14,6 @@ import (
 type KeyProperties struct {
 	Id uint			`gorm:"primary_key"`
 	KeyName string		`gorm:"not null;unique"`
-	OwnerDetails OwnerDetails `gorm:"ForeignKey:OwnerName;AssociationForeignKey:name"`
 	OwnerName string	`gorm:"not null;unique"`
 	KeyType string		`gorm:"not null"`
 	Algorithm string	`gorm:"not null"`
@@ -91,6 +90,9 @@ func (k *KeyModel) CreateTable() error {
 		return err
 	}
 	k.DB = k.DB.Debug().CreateTable(&KeyProperties{}).AddForeignKey("owner_name", "owner_details(name)", "RESTRICT", "RESTRICT")
+	if k.DB.Error != nil {
+		return k.DB.Error
+	}
 	return nil
 }
 
@@ -128,6 +130,10 @@ func (k *KeyModel) SelectAll() ( error , []KeyProperties) {
 
 	k.DB = k.DB.Find(&s)
 
+	if k.DB.Error != nil {
+		return k.DB.Error, nil
+	}
+
 	return nil, s
 }
 
@@ -142,7 +148,11 @@ func (k *KeyModel) GetPrivateBytes(keyName string , owner string) (error, []byte
 
 	kp := &KeyProperties{}
 
-	//k.DB = k.DB.Find(kp, KeyProperties{KeyName: keyName , Owner:owner})
+	k.DB = k.DB.Find(kp, KeyProperties{KeyName: keyName , OwnerName:owner})
+
+	if k.DB.Error != nil {
+		return k.DB.Error, nil
+	}
 
 	return nil, kp.PrivateKey;
 
@@ -161,9 +171,99 @@ func (k *KeyModel) GetPublicBytes(keyName string , owner string) (error, []byte)
 
 	kp := &KeyProperties{}
 
-	//k.DB = k.DB.Find(kp, KeyProperties{KeyName: keyName , Owner:owner})
+	k.DB = k.DB.Find(kp, KeyProperties{KeyName: keyName , OwnerName:owner})
+
+	if k.DB.Error != nil {
+		return k.DB.Error, nil
+	}
+
 
 	return nil, kp.PublicKey;
 
 }
+
+func (k *KeyModel) Delete(key string) (error) {
+	defer k.Close()
+	_,err := k.Connect()
+
+	if err != nil {
+		k.DB = nil
+		return err
+	}
+
+	k.DB = k.DB.Where("key_name = ?",key).Delete(KeyProperties{})
+
+	if k.DB.Error != nil {
+		return k.DB.Error
+	}
+
+	return nil;
+}
+
+
+
+func (k *KeyModel) CheckIfPresent(key string) (error, *KeyProperties) {
+	defer k.Close()
+	_,err := k.Connect()
+
+	if err != nil {
+		k.DB = nil
+		return err, nil
+	}
+
+	kp := &KeyProperties{}
+
+	k.DB = k.DB.Find(kp, KeyProperties{KeyName: key})
+
+	if k.DB.Error != nil {
+		return k.DB.Error, nil
+	}
+
+
+	return nil, kp;
+}
+
+
+
+func (k *KeyModel) Update(key *KeyProperties ) error {
+	defer k.Close()
+
+	err,kp := k.CheckIfPresent(key.KeyName)
+
+	if err != nil {
+		return err
+	}
+
+	//fmt.Println(*kp)
+
+	if key.OwnerName != "" {
+		kp.OwnerName = key.OwnerName
+	}
+	if key.KeyName  != "" {
+		kp.KeyName = key.KeyName
+	}
+	if key.CustomAttributes != "" {
+		kp.CustomAttributes = key.CustomAttributes
+	}
+
+	kp.Deletable = key.Deletable
+
+	kp.Exportable = key.Exportable
+
+	_,err = k.Connect()
+
+	if err != nil {
+		k.DB = nil
+		return err
+	}
+
+	k.DB = k.DB.Save(kp)
+
+	if k.DB.Error != nil {
+		return k.DB.Error
+	}
+
+	return nil
+}
+
 

@@ -5,15 +5,6 @@ import (
 )
 
 
-func CreateKeyApi(c echo.Context) error {
-	return CreateKey(c)
-}
-
-
-func DropKeyApi(c echo.Context) error {
-	return DropKey(c)
-}
-
 
 func LoginApi(c echo.Context) error {
 	return Login(c)
@@ -36,4 +27,8 @@ func UpdateUser(c echo.Context) error {
 	return UpdateUserApi(c)
 }
 
+
+func CreateKey(c echo.Context) error {
+	return CreateKeyApi(c)
+}
 
