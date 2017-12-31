@@ -185,7 +185,7 @@ func ListUsersApi(c echo.Context) error {
 	e,d := m.SelectAll()
 
 	if e != nil {
-		return c.String(http.StatusBadRequest, e.Error())
+		return c.JSON(http.StatusBadRequest,&kmerrors.ErrorStruct{Value:e.Error(),Action:"See Error Message."})
 	}
 
 	return c.JSON(http.StatusOK,&d)
@@ -209,15 +209,15 @@ func UpdateUserApi(c echo.Context) error {
 	e = inp.Decode(&l)
 
 	if e != nil {
-		return c.String(http.StatusBadRequest, e.Error())
+		return c.JSON(http.StatusPartialContent,&kmerrors.ErrorStruct{Value:e.Error(),Action:"PLease enter valid JSON."})
 	}
 
 	if strings.ToUpper(l.Name) == "ADMIN" {
-		return c.String(http.StatusNotAcceptable, "Cannot update admin")
+		return c.JSON(http.StatusBadRequest,&kmerrors.ErrorStruct{Value:"Cannot Update Admin",Action:"Delete Update User."})
 	}
 
 	if strings.ToUpper(use) == strings.ToUpper(l.Name) {
-		return c.String(http.StatusNotAcceptable, "Cannot update itself")
+		return c.JSON(http.StatusBadRequest,&kmerrors.ErrorStruct{Value:"User Cannot Update Itself",Action:"Update Valid User."})
 	}
 
 	l.Password = fmt.Sprintf("%X",sha256.Sum256([]byte(l.Password)))
@@ -225,8 +225,8 @@ func UpdateUserApi(c echo.Context) error {
 	e = m.Update(&l)
 
 	if e != nil {
-		return c.String(http.StatusNotAcceptable, e.Error())
+		return c.JSON(http.StatusBadRequest,&kmerrors.ErrorStruct{Value:e.Error(),Action:"See Error Message."})
 	}
 
-	return c.JSON(http.StatusOK,echo.Map{"Status":"Success"})
+	return c.JSON(http.StatusOK,&kmerrors.ErrorStruct{Value:"Success",Action:"User"+ l.Name +"Updated."})
 }

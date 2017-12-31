@@ -1,4 +1,5 @@
 curl -X POST -H 'Content-Type: application/json' -d '{"Login":"admin","Password":"asdf1234"}' localhost:1323/login
-
-
-curl -X POST -H 'Content-Type: application/json' -H 'Authorization: Bearer:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYWRtaW4iLCJleHAiOjE1MTU3NzkxOTB9.dylzsOeGnQebm48KCsuNRqEpkEqtgA7LaJVWFWTRPwc' -d '{"Login":"admin","Password":"asdf1234"}' localhost:1323/api/createkey
+curl -X POST -H 'Content-Type: application/json' \
+-H 'Authorization: Bearer:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYWRtaW4iLCJleHAiOjE1MTU3NzkxOTB9.dylzsOeGnQebm48KCsuNRqEpkEqtgA7LaJVWFWTRPwc' \
+-d '{"keytype":"asymmetric","keysize":"128","algorithm":"aes","deletable":"true","exportable":"true","owner":"admin"}' \
+localhost:1323/api/createkey

@@ -14,7 +14,7 @@ import (
 type KeyProperties struct {
 	Id uint			`gorm:"primary_key"`
 	KeyName string		`gorm:"not null;unique"`
-	OwnerName string	`gorm:"not null;unique"`
+	OwnerName string	`gorm:"not null"`
 	KeyType string		`gorm:"not null"`
 	Algorithm string	`gorm:"not null"`
 	Size int		`gorm:"not null"`
